@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build:dev": "rm -rf index.js && babel src -d . && webpack --mode development",
-    "build": "rm -rf index.js && babel src -d . && webpack --mode production"
+    "build": "rm -rf index.js && babel src -d . && webpack --mode production",
+    "test": "rm -rf index.js && babel src -d ."
   },
   "repository": {
     "type": "git",

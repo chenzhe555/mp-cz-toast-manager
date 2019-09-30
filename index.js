@@ -1,1 +1,216 @@
-!function(t){var e={};function a(n){if(e[n])return e[n].exports;var o=e[n]={i:n,l:!1,exports:{}};return t[n].call(o.exports,o,o.exports,a),o.l=!0,o.exports}a.m=t,a.c=e,a.d=function(t,e,n){a.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},a.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},a.t=function(t,e){if(1&e&&(t=a(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(a.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var o in t)a.d(n,o,function(e){return t[e]}.bind(null,o));return n},a.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return a.d(e,"a",e),e},a.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},a.p="",a(a.s=0)}([function(t,e,a){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=function(){function t(t,e){for(var a=0;a<e.length;a++){var n=e[a];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,a,n){return a&&t(e.prototype,a),n&&t(e,n),e}}();var o=function(){function t(){!function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}(this,t)}return n(t,null,[{key:"show",value:function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"",e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};if(!(t.length<=0)){var a=Object.assign({title:t,icon:"none",duration:this.defaultDuring},e);switch(this.showStrategy){case this.toastManagerStrategy.Immediately:wx.showToast(a);break;case this.toastManagerStrategy.Queue:this.showQueue.push(a),this.isShowingToast||this._showToastFunc()}}}},{key:"hide",value:function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"";switch(this.showStrategy){case this.toastManagerStrategy.Immediately:wx.hideToast();break;case this.toastManagerStrategy.Queue:if(this.showQueue.length>0){var e=0;if(t.length>0){e=-1;for(var a=0;a<this.showQueue.length;++a)if(this.showQueue[a].key===t){e=a;break}}-1!==e&&(this.showQueue.splice(e,1),0===e&&(this._clean(),this._showToastFunc()))}else wx.hideToast(),this._clean()}}},{key:"_showToastFunc",value:function(){var t=this;if(this.showQueue.length<=0)this._clean();else{var e=this.showQueue[0];this.showFailStrategy===this.toastManagerFailStrategy.Retry&&(e.fail=this.showToastFail),this.isShowingToast=!0,wx.showToast(e),this.showTimeoutCallback=setTimeout((function(){t.showQueue.shift(),t._clean(),t._showToastFunc()}),e.duration)}}},{key:"_clean",value:function(){this.showTimeoutCallback&&clearTimeout(this.showTimeoutCallback),this.isShowingToast=!1}},{key:"showToastFail",value:function(){this._clean(),this._showToastFunc()}}]),t}();o.toastManagerStrategy={Immediately:1,Queue:2},o.toastManagerFailStrategy={Immediately:1,Queue:2},o.isShowingToast=!1,o.defaultDuring=1500,o.showQueue=[],o.showStrategy=o.toastManagerStrategy.Immediately,o.showFailStrategy=o.toastManagerFailStrategy.Continue,e.default=o}]);
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * WX toast管理器类
+ */
+var ToastManager = function () {
+    function ToastManager() {
+        _classCallCheck(this, ToastManager);
+    }
+
+    _createClass(ToastManager, null, [{
+        key: 'show',
+
+
+        /*************************************************************对外提供的方法*************************************************************/
+
+        /**
+         * 显示Toast
+         * @param {string} msg 显示的Toast文本信息
+         * @param {object} config 配置信息 {icon, image, duration, mask, key}, 其中key不是官方提供的值，是用于隐藏特定Key对应的Toast
+         */
+
+        //显示失败策略
+
+        //显示队列
+
+        // 当前是否有toast文本正在显示
+
+        /*************************************************************属性*************************************************************/
+        //显示策略: 1.有新的toast文本，则直接显示 2.有新的toast文本，排入队列
+        value: function show() {
+            var msg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+            var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+            //空串 返回
+            if (msg.length <= 0) {
+                return;
+            }
+
+            //设置Toast相关配置信息
+            var toastConfig = Object.assign({ 'title': msg, 'icon': 'none', 'duration': this.defaultDuring }, config);
+
+            // 显示策略判断
+            switch (this.showStrategy) {
+                case this.toastManagerStrategy.Immediately:
+                    {
+                        //如果是立即，则直接执行微信Toast显示方法
+                        wx.showToast(toastConfig);
+                    }
+                    break;
+                case this.toastManagerStrategy.Queue:
+                    {
+                        //如果是走队列，则把配置文件放入队列，执行显示Toast操作
+                        this.showQueue.push(toastConfig);
+                        if (!this.isShowingToast) {
+                            this._showToastFunc();
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        //定时器
+
+        //显示策略
+
+        // Toast显示默认时间
+
+        //失败策略: 1.忽略 2.重试
+
+    }, {
+        key: 'hide',
+
+
+        /**
+         * 隐藏Toast
+         * @param {string} key 隐藏特定key值的Toast, 如果key不存在，则忽略
+         */
+        value: function hide() {
+            var key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+            switch (this.showStrategy) {
+                case this.toastManagerStrategy.Immediately:
+                    {
+                        //如果是立即，则直接执行微信Toast隐藏方法
+                        wx.hideToast();
+                    }
+                    break;
+                case this.toastManagerStrategy.Queue:
+                    {
+                        // 如果是走队列，则清除定时器和第一个配置信息或者特定key对应的
+                        if (this.showQueue.length > 0) {
+                            // 默认清除第一个配置信息
+                            var cleanIndex = 0;
+                            // 如果存在特定key，找出是否有符合的, cleanIndex设置为-1
+                            if (key.length > 0) {
+                                cleanIndex = -1;
+                                var config = null;
+                                //筛选元素
+                                for (var i = 0; i < this.showQueue.length; ++i) {
+                                    config = this.showQueue[i];
+                                    if (config['key'] === key) {
+                                        cleanIndex = i;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // 清除并重新显示,如果是第一个，停止定时；如果不是第一个，直接删除数组元素即可
+                            if (cleanIndex !== -1) {
+                                this.showQueue.splice(cleanIndex, 1);
+                                if (cleanIndex === 0) {
+                                    this._clean();
+                                    this._showToastFunc();
+                                }
+                            }
+                        } else {
+                            wx.hideToast();
+                            this._clean();
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }, {
+        key: '_showToastFunc',
+
+
+        /*************************************************************内部调用方法*************************************************************/
+        /**
+         * 显示Toast业务逻辑
+         */
+        value: function _showToastFunc() {
+            var _this = this;
+
+            //如果队列里没有，则返回
+            if (this.showQueue.length <= 0) {
+                this._clean();
+                return;
+            }
+
+            //取出队列中第一个配置文件
+            var config = this.showQueue[0];
+
+            // eslint-disable-next-line no-warning-comments
+            // TODO 失败暂未实测
+            if (this.showFailStrategy === this.toastManagerFailStrategy.Retry) {
+                //如果选择失败重试，则实现Fail方法
+                config['fail'] = this.showToastFail;
+            }
+
+            //显示Toast
+            this.isShowingToast = true;
+            wx.showToast(config);
+
+            //设置定时器
+            this.showTimeoutCallback = setTimeout(function () {
+                //移除第一个配置
+                _this.showQueue.shift();
+                _this._clean();
+                _this._showToastFunc();
+            }, config['duration']);
+        }
+    }, {
+        key: '_clean',
+
+
+        /**
+         * 清理环境
+         */
+        value: function _clean() {
+            if (this.showTimeoutCallback) {
+                clearTimeout(this.showTimeoutCallback);
+            }
+            this.isShowingToast = false;
+        }
+
+        /*
+        wx.showToast调用失败，目前只对retry做处理
+        */
+
+    }, {
+        key: 'showToastFail',
+        value: function showToastFail() {
+            //如果失败，清除定时器，并重新显示第一个配置
+            this._clean();
+            this._showToastFunc();
+        }
+    }]);
+
+    return ToastManager;
+}();
+
+ToastManager.toastManagerStrategy = {
+    'Immediately': 1,
+    'Queue': 2 };
+ToastManager.toastManagerFailStrategy = {
+    'Immediately': 1,
+    'Queue': 2 };
+ToastManager.isShowingToast = false;
+ToastManager.defaultDuring = 1500;
+ToastManager.showQueue = [];
+ToastManager.showStrategy = ToastManager.toastManagerStrategy.Immediately;
+ToastManager.showFailStrategy = ToastManager.toastManagerFailStrategy.Continue;
+exports.default = ToastManager;
