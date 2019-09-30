@@ -4,8 +4,8 @@
   "description": "小程序：Toast管理类",
   "main": "index.js",
   "scripts": {
-    "build:dev": "rm -rf index.js && babel src --out-dir ./ && webpack index.js --output-path . --output-filename index.js --mode development",
-    "build": "rm -rf index.js && babel src --out-dir ./ && webpack index.js --output-path . --output-filename index.js --mode production"
+    "build:dev": "rm -rf index.js && babel src -d . && webpack --mode development",
+    "build": "rm -rf index.js && babel src -d . && webpack --mode production"
   },
   "repository": {
     "type": "git",
