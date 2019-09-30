@@ -33,7 +33,7 @@ export default class ToastManager {
    * @param {string} msg 显示的Toast文本信息
    * @param {object} config 配置信息 {icon, image, duration, mask, key}, 其中key不是官方提供的值，是用于隐藏特定Key对应的Toast
    */
-  static show = (msg = '', config = {}) => {
+  static show(msg = '', config = {}) {
       //空串 返回
       if (msg.length <= 0) {
           return;
@@ -68,7 +68,7 @@ export default class ToastManager {
    * 隐藏Toast
    * @param {string} key 隐藏特定key值的Toast, 如果key不存在，则忽略
    */
-  static hide = (key = '') => {
+  static hide(key = '') {
       switch (this.showStrategy) {
       case this.toastManagerStrategy.Immediately:
           {
@@ -119,7 +119,7 @@ export default class ToastManager {
   /**
    * 显示Toast业务逻辑
    */
-  static _showToastFunc = () => {
+  static _showToastFunc() {
       //如果队列里没有，则返回
       if (this.showQueue.length <= 0) {
           this._clean();
@@ -152,7 +152,7 @@ export default class ToastManager {
   /**
    * 清理环境
    */
-  static _clean = () => {
+  static _clean() {
       if (this.showTimeoutCallback) {
           clearTimeout(this.showTimeoutCallback);
       }
@@ -162,7 +162,7 @@ export default class ToastManager {
   /*
   wx.showToast调用失败，目前只对retry做处理
   */
-  static showToastFail = () => {
+  static showToastFail() {
       //如果失败，清除定时器，并重新显示第一个配置
       this._clean();
       this._showToastFunc();
