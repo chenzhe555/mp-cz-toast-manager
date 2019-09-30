@@ -1,6 +1,6 @@
 {
   "name": "mp-cz-toast-manager",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "小程序：Toast管理类",
   "main": "index.js",
   "scripts": {
